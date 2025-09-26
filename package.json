@@ -31,7 +31,11 @@
     "mongodb",
     "sql",
     "mongoql",
-    "mongosql"
+    "mongosql",
+    "query",
+    "fluent",
+    "builder",
+    "wrapper"
   ],
   "bugs": {
     "url": "https://github.com/davisdeveloper/mongoql/issues"
