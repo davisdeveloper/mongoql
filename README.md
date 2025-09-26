@@ -1,2 +1,2 @@
 # mongoql
-"Use MongoDB with SQL commands. Quick, fast and easy
+Use MongoDB with SQL commands. Quick, fast and easy
