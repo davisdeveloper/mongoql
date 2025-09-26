@@ -1,13 +1,13 @@
 {
   "name": "mongoql",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Use MongoDB with SQL commands. Quick, fast and esy",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
-  "author": "",
+  "author": "Davisville",
   "license": "ISC",
   "dependencies": {
     "express": "^5.1.0",
@@ -17,5 +17,24 @@
     ".": {
       "import": "./core/index.js"
     }
-  }
+  },
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davisdeveloper/mongoql.git"
+  },
+  "keywords": [
+    "mongodb",
+    "sql",
+    "mongoql",
+    "mongosql"
+  ],
+  "bugs": {
+    "url": "https://github.com/davisdeveloper/mongoql/issues"
+  },
+  "homepage": "https://github.com/davisdeveloper/mongoql#readme"
 }

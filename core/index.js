@@ -1,23 +1,42 @@
+// core/index.js
+import { MongoClient } from "mongodb";
+import DBWrapper from "./dbwrapper.js";
 
-import { MongoClient } from 'mongodb';
-import DBWrapper from './dbwrapper.js';
-
+/**
+ * MongoQL
+ * Entry point for fluent MongoDB access.
+ * Can be used with async/await or .then/.catch.
+ */
 export default class MongoQL {
+  /**
+   * @param {string} uri - MongoDB connection URI
+   */
   constructor(uri) {
+    if (!uri) throw new Error("MongoQL requires a MongoDB URI");
     this.client = new MongoClient(uri);
-    this.connected = false;
-    this.connectPromise = this.client.connect().then(() => {
-      this.connected = true;
+    this._connected = false;
+    this._connectPromise = this.client.connect().then(() => {
+      this._connected = true;
     });
   }
 
-  async getDB(dbName) {
-    return this.connectPromise.then(() => new DBWrapper(this.client.db(dbName)));
+  /**
+   * Returns a wrapped database instance.
+   * @param {string} dbName
+   * @returns {Promise<DBWrapper>}
+   */
+  getDB(dbName) {
+    return this._connectPromise.then(() => {
+      const db = this.client.db(dbName);
+      return new DBWrapper(db);
+    });
   }
 
-  async close() {
-    return this.client.close().then(() => {
-      this.connected = false;
-    });
+  /**
+   * Closes the MongoDB connection.
+   * @returns {Promise<void>}
+   */
+  close() {
+    return this.client.close();
   }
 }

@@ -1,28 +1,31 @@
-import express from "express";
-import MongoQL from "mongoql"
+import MongoQL from "mongoql";
+import { BETWEEN, IN, LIKE } from "../sql/index.js";
 
-//Initialization
-const localUri = "mongodb://127.0.0.1:27017/";
-const localServer = new MongoQL(localUri);
-const app = express();
-app.use(express.json());
-
-//Getting DBs and collections
-const bookstore = await localServer.getDB("bookstore");
-const books = await bookstore.getCollection("books");
-
-app.get("/b", async (req, res) => {
-  const p = [];
-  await books
-    .find()
-    .forEach((book) => {
-      p.push(book);
+async function asyncAwait() {
+  const mongo = new MongoQL("mongodb://127.0.0.1:27017");
+  const db = await mongo.getDB("bookstore");
+  const books = db.getCollection("books");
+  const results = await books
+      .select()
+      .addFields()
+    .where({
+      rating: BETWEEN(1, 10),
+      author: LIKE("Brandon"),
+      genres: IN(["fantasy"]),
     })
-    .then((r) => {
-      res.status(200).json(p);
-    });
-});
+    .exec();
+  return results;
+}
 
-app.listen(3000, () => {
-  console.log("started");
-});
+function thenCatch() {
+  const mongo = new MongoQL("mongodb://127.0.0.1:27017");
+
+  mongo
+    .getDB("bookstore")
+    .then((db) => db.getCollection("books"))
+    .then((books) => books.select().exec())
+    .then((results) => console.log(results))
+    .catch((err) => console.error("MongoQL error:", err));
+}
+
+console.log(await asyncAwait());
