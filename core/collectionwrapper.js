@@ -15,13 +15,21 @@ export default class CollectionWrapper {
   select(fields) {
     if (!fields || fields.length === 0 || fields.includes("*")) {
       this.projection = null;
-    } else if (Array.isArray(fields)) {
+    } else {
       this.projection = {};
-      fields.forEach((field) => {
-        this.projection[field.trim()] = 1;
-      });
-    } else if (typeof fields === "object") {
-      this.projection = fields; // full $project syntax
+      for (const item of fields) {
+        if (typeof item === "string") {
+          this.projection[item.trim()] = 1;
+        } else if (typeof item === "object") {
+          for (const [key, value] of Object.entries(item)) {
+            if (typeof value === "string") {
+              this.projection[value] = `$${key}`; // alias
+            } else if (typeof value === "object") {
+              this.projection[key] = value; // computed
+            }
+          }
+        }
+      }
     }
     return this;
   }
