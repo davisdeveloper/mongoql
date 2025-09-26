@@ -13,13 +13,15 @@ export default class CollectionWrapper {
   }
 
   select(fields) {
-    if (!fields || fields.length === 0 || fields.includes('*')) {
+    if (!fields || fields.length === 0 || fields.includes("*")) {
       this.projection = null;
-    } else {
+    } else if (Array.isArray(fields)) {
       this.projection = {};
-      fields.forEach(field => {
+      fields.forEach((field) => {
         this.projection[field.trim()] = 1;
       });
+    } else if (typeof fields === "object") {
+      this.projection = fields; // full $project syntax
     }
     return this;
   }
@@ -29,8 +31,8 @@ export default class CollectionWrapper {
     return this;
   }
 
-  orderBy(field, direction = 'asc') {
-    this.sort = { [field]: direction === 'asc' ? 1 : -1 };
+  orderBy(field, direction = "asc") {
+    this.sort = { [field]: direction === "asc" ? 1 : -1 };
     return this;
   }
 
@@ -84,8 +86,8 @@ export default class CollectionWrapper {
         pipeline.push({
           $group: {
             _id: `$${this.groupField}`,
-            items: { $push: '$$ROOT' }
-          }
+            items: { $push: "$$ROOT" },
+          },
         });
       }
 
@@ -108,7 +110,10 @@ export default class CollectionWrapper {
       return await this.collection.aggregate(pipeline).toArray();
     }
 
-    let cursor = this.collection.find(this.query, this.projection ? { projection: this.projection } : {});
+    let cursor = this.collection.find(
+      this.query,
+      this.projection ? { projection: this.projection } : {}
+    );
 
     if (this.sort) cursor = cursor.sort(this.sort);
     if (this.skipCount !== null) cursor = cursor.skip(this.skipCount);
