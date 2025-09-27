@@ -1,6 +1,6 @@
 {
   "name": "mongoql",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Use MongoDB with SQL commands. Quick, fast and esy",
   "main": "index.js",
   "scripts": {
